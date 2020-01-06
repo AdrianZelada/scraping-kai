@@ -3,15 +3,32 @@ var router = express.Router();
 const website = 'http://kaikaia.com/';
 const axios = require("axios");
 const cheerio = require('cheerio');
+
+/**
+ * Initial Request to Website = 'http://kaikaia.com/'
+ * @return {Promise<*>} Object Html
+ */
 const fetchWebsite = async () => {
     const result = await axios.get(website);
     return cheerio.load(result.data);
 };
 
-const statesProject = ['Finish', 'Working'];
-const implementProject = ['Nasa', 'Work', 'Ministerio', 'Panama', 'Brasil'];
+/**
+ * Project Progress values
+ * @type {string[]}
+ */
+const projectProgress = ['Finish', 'Working'];
 
-/* GET users listing. */
+/**
+ * Project Implement Values
+ * @type {string[]}
+ */
+const projectImplement = ['Nasa', 'Work', 'Ministerio', 'Panama', 'Brasil'];
+
+/**
+ *  scraping 'http://kaikaia.com/' and parse Html and get information of Projects
+ **/
+
 router.get('/', async function(req, res, next) {
     const $ = await fetchWebsite();
     const htmlRows = $('.col-sm-3','.row.text-center');
@@ -21,18 +38,23 @@ router.get('/', async function(req, res, next) {
         projects.push({
             imgThumbnail: website + div.children('.img-thumbnail.img-responsive' ).attr('src'),
             imgLogo: website + div.children('h2').children('img').attr('src'),
-            title: div.children('.small-text').text(),
+            name: div.children('.small-text').text(),
             version: div.children('p').children('span').text(),
             lastUpdate: div.children('dl').children('dd').first().text(),
             status: div.children('dl').children('dd').last().text(),
             link: div.children('a').attr('href'),
-            state: getRandomValue(statesProject),
-            implement: getRandomValue(implementProject),
+            progress: getRandomValue(projectProgress),
+            implement: getRandomValue(projectImplement),
         });
     });
     res.json(projects);
 });
 
+/**
+ * Get Value random of the list
+ * @param list
+ * @return {value}
+ */
 function getRandomValue(list) {
     const i = Math.floor((Math.random() * list.length));
     return list[i];
