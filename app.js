@@ -33,6 +33,7 @@ app.use('/kaikaia', kaikaiaRouter);
 // csbInspector();
 const app1 = csbInspector({
     app,
+    disabledBrowser: false
     // route: "console"
 });
 // catch 404 and forward to error handler

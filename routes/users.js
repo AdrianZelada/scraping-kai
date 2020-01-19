@@ -32,6 +32,13 @@ router.get('/end', function(req, res, next) {
     })
 })
 
+router.get('/error', function(req, res, next) {
+    const a =0 ;
+    const b = a + d;
+    res.json({
+        ok: 'end'
+    })
+})
 
 
 module.exports = router;
